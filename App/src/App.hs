@@ -10,7 +10,8 @@ data Input
     | MouseClick Char
     | MouseMove  Int  Int
 
-data App st = App { 
-    tick   :: Double -> st -> st,
-    input  :: Input  -> st -> st,
-    render :: st     -> Image}
+data App state = App { 
+    start  :: state,
+    tick   :: Double -> state -> state,
+    input  :: Input  -> state -> state,
+    render :: state  -> Image}

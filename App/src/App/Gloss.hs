@@ -11,10 +11,10 @@ import qualified Graphics.Gloss as G (Picture)
 import qualified Graphics.Gloss.Interface.Pure.Game as GM (Event (EventKey), Key (Char), KeyState (Down, Up))
 import qualified Graphics.Gloss.Raster.Array as G (playArray, Display (InWindow), rgbI)
 
-runApp :: forall state . App state -> state -> IO ()
-runApp app state = G.playArray display (1,1) 60 state glossRender glossEvent glossTick where
+runApp :: forall state . App state -> IO ()
+runApp app = G.playArray display (1,1) 60 (start app) glossRender glossEvent glossTick where
 
-    (Image (V2 w h) _ _) = render app state
+    (Image (V2 w h) _ _) = render app (start app)
 
     display :: G.Display
     display = G.InWindow "λApp" (w,h) (0,0)

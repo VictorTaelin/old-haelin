@@ -112,12 +112,14 @@ draw drawer image@(Image size depthBuffer pixelBuffer)
     = uncurry (Image size) $ runST $ do
         pixelMVec <- UV.thaw pixelBuffer
         depthMVec <- UV.thaw depthBuffer
-        let writer pos depth pixel = do
-                let idx = index size pos
-                current <- MUV.unsafeRead depthMVec idx
-                when (depth >= current) $ do
-                    MUV.unsafeWrite pixelMVec idx pixel
-                    MUV.unsafeWrite depthMVec idx depth
+        let V2 w h = size
+        let writer pos@(V2 x y) depth pixel = do
+                let idx      = index size pos
+                when (x>=0 && y>=0 && x<w && y<h) $ do
+                    current <- MUV.read depthMVec idx
+                    when (depth >= current) $ do
+                        MUV.unsafeWrite pixelMVec idx pixel
+                        MUV.unsafeWrite depthMVec idx depth
         let (Drawer f) = drawer in f writer
         pixelVec <- UV.unsafeFreeze pixelMVec
         depthVec <- UV.unsafeFreeze depthMVec
